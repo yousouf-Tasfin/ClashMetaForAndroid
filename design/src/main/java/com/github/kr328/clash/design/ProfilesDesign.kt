@@ -22,7 +22,6 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
         object Create : Request()
         data class Active(val profile: Profile) : Request()
         data class Update(val profile: Profile) : Request()
-        data class Edit(val profile: Profile) : Request()
         data class Duplicate(val profile: Profile) : Request()
         data class Delete(val profile: Profile) : Request()
     }
@@ -56,11 +55,7 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
     }
 
     suspend fun requestSave(profile: Profile) {
-        showToast(R.string.active_unsaved_tips, ToastDuration.Long) {
-            setAction(R.string.edit) {
-                requests.trySend(Request.Edit(profile))
-            }
-        }
+        showToast(R.string.active_unsaved_tips, ToastDuration.Long)
     }
 
     fun updateElapsed() {
@@ -113,12 +108,6 @@ class ProfilesDesign(context: Context) : Design<ProfilesDesign.Request>(context)
 
     fun requestUpdate(dialog: Dialog, profile: Profile) {
         requests.trySend(Request.Update(profile))
-
-        dialog.dismiss()
-    }
-
-    fun requestEdit(dialog: Dialog, profile: Profile) {
-        requests.trySend(Request.Edit(profile))
 
         dialog.dismiss()
     }
