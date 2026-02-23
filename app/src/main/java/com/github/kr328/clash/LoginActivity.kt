@@ -1,11 +1,12 @@
 package com.github.kr328.clash
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.R
 import com.github.kr328.clash.design.Design
-import com.github.kr328.clash.util.activity
 import kotlinx.coroutines.launch
 
 class LoginActivity : BaseActivity<Unit>() {
@@ -13,14 +14,19 @@ class LoginActivity : BaseActivity<Unit>() {
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
 
-    override val design: Design<Unit> = Design { _, _ -> }
+    override var design: Unit? = null
+
+    override suspend fun main() {
+        // This activity uses setContentView directly instead of the design system
+        // So we don't need to do anything here
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
         // Create a simple login layout programmatically
         setContentView(androidx.constraintlayout.widget.ConstraintLayout(this).apply {
-            val padding = resources.getDimensionPixelSize(android.R.dimen.activity_horizontal_margin)
+            val padding = resources.getDimensionPixelSize(R.dimen.activity_horizontal_margin)
             
             usernameEditText = androidx.appcompat.widget.AppCompatEditText(context).also { editText ->
                 editText.hint = "Username"
@@ -87,7 +93,7 @@ class LoginActivity : BaseActivity<Unit>() {
         if (username == "admin" && password == "admin") {
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
             // Start the main activity after successful login
-            startActivity(activity<MainActivity>())
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         } else {
             Toast.makeText(this, "Invalid credentials. Use admin/admin.", Toast.LENGTH_LONG).show()
