@@ -5,20 +5,18 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.R
 import com.github.kr328.clash.design.Design
 import kotlinx.coroutines.launch
 
-class LoginActivity : BaseActivity<Unit>() {
+class LoginActivity : BaseActivity<Design<Unit>>() {
     private lateinit var usernameEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
 
-    override var design: Unit? = null
-
     override suspend fun main() {
-        // This activity uses setContentView directly instead of the design system
-        // So we don't need to do anything here
+        // Since we're not using the design system for this activity,
+        // we just need to ensure the UI is set up properly
+        // The UI is handled in onCreate via setContentView
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +24,7 @@ class LoginActivity : BaseActivity<Unit>() {
         
         // Create a simple login layout programmatically
         setContentView(androidx.constraintlayout.widget.ConstraintLayout(this).apply {
-            val padding = resources.getDimensionPixelSize(R.dimen.activity_horizontal_margin)
+            val padding = resources.getDimension(com.github.kr328.clash.design.R.dimen.main_padding_horizontal).toInt()
             
             usernameEditText = androidx.appcompat.widget.AppCompatEditText(context).also { editText ->
                 editText.hint = "Username"
