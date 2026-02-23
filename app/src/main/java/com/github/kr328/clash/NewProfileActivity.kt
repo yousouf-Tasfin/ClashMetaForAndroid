@@ -30,73 +30,10 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class NewProfileActivity : BaseActivity<NewProfileDesign>() {
-    private val self: NewProfileActivity
-        get() = this
-
-    private val scanLauncher = registerForActivityResult(ScanQRCode(), ::scanResultHandler)
-
     override suspend fun main() {
-        val design = NewProfileDesign(this)
-
-        design.patchProviders(queryProfileProviders())
-
-        setContentDesign(design)
-
-        while (isActive) {
-            select<Unit> {
-                events.onReceive {
-
-                }
-                design.requests.onReceive {
-                    when (it) {
-                        is NewProfileDesign.Request.Create -> {
-                            withProfile {
-                                val name = getString(R.string.new_profile)
-
-                                val uuid: UUID? = when (val p = it.provider) {
-                                    is ProfileProvider.File ->
-                                        create(Profile.Type.File, name)
-
-                                    is ProfileProvider.Url ->
-                                        create(Profile.Type.Url, name)
-
-                                    is ProfileProvider.QR -> {
-                                        null
-                                    }
-
-                                    is ProfileProvider.External -> {
-                                        val data = p.get()
-
-                                        if (data != null) {
-                                            val (uri, initialName) = data
-
-                                            create(
-                                                Profile.Type.External,
-                                                initialName ?: name,
-                                                uri.toString()
-                                            )
-                                        } else {
-                                            null
-                                        }
-                                    }
-                                }
-
-                                if (uuid != null)
-                                    launchProperties(uuid)
-                            }
-                        }
-
-                        is NewProfileDesign.Request.OpenDetail -> {
-                            launchAppDetailed(it.provider)
-                        }
-
-                        is NewProfileDesign.Request.LaunchScanner -> {
-                            scanLauncher.launch(null)
-                        }
-                    }
-                }
-            }
-        }
+        // Redirect to main activity since we're removing profile creation
+        finish()
+        startActivity(intent<MainActivity>())
     }
 
     private fun launchAppDetailed(provider: ProfileProvider.External) {
