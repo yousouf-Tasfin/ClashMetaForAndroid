@@ -98,9 +98,9 @@ class NewProfileActivity : BaseActivity<NewProfileDesign>() {
             }
 
             listOf(
-                ProfileProvider.File(self),
-                ProfileProvider.Url(self),
-                ProfileProvider.QR(self)
+                ProfileProvider.File(this),
+                ProfileProvider.Url(this),
+                ProfileProvider.QR(this)
             ) + providers
         }
     }

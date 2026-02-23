@@ -18,7 +18,7 @@ import com.github.kr328.clash.util.stopClashService
 import com.github.kr328.clash.util.withClash
 import com.github.kr328.clash.util.withProfile
 import com.github.kr328.clash.core.bridge.*
-import com.github.kr328.clash.util.queryAppVersionName
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -79,7 +79,7 @@ class MainActivity : BaseActivity<MainDesign>() {
                         MainDesign.Request.OpenHelp ->
                             startActivity(HelpActivity::class.intent)
                         MainDesign.Request.OpenAbout ->
-                            design.showAbout(queryAppVersionName())
+                            design.showAbout("Unknown Version")
                     }
                 }
                 if (clashRunning) {
@@ -106,7 +106,7 @@ class MainActivity : BaseActivity<MainDesign>() {
                 )
                 
                 // Set as active profile
-                setActiveByUUID(profileUuid)
+                setActive(existingProfiles.first { it.name == "Proxybdix Default" })
             } else {
                 // Activate existing default profile
                 setActive(existingProfiles.first { it.name == "Proxybdix Default" })
