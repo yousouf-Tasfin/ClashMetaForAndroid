@@ -28,7 +28,7 @@ class ProfilesActivity : BaseActivity<ProfilesDesign>() {
 
         // Redirect to main activity since we're removing profile management
         finish()
-        startActivity(intent<MainActivity>())
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     private suspend fun ProfilesDesign.fetch() {

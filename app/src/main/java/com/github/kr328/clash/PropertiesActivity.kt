@@ -18,7 +18,7 @@ class PropertiesActivity : BaseActivity<PropertiesDesign>() {
     override suspend fun main() {
         // Redirect to main activity since we're removing profile editing
         finish()
-        startActivity(intent<MainActivity>())
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     override fun onBackPressed() {
