@@ -12,15 +12,19 @@ import com.github.kr328.clash.common.util.intent
 import com.github.kr328.clash.common.util.ticker
 import com.github.kr328.clash.design.MainDesign
 import com.github.kr328.clash.design.ui.ToastDuration
+import com.github.kr328.clash.service.model.Profile
 import com.github.kr328.clash.util.startClashService
 import com.github.kr328.clash.util.stopClashService
 import com.github.kr328.clash.util.withClash
 import com.github.kr328.clash.util.withProfile
 import com.github.kr328.clash.core.bridge.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.withContext
+import java.util.*
 import java.util.concurrent.TimeUnit
 import com.github.kr328.clash.design.R
 
@@ -29,6 +33,9 @@ class MainActivity : BaseActivity<MainDesign>() {
         val design = MainDesign(this)
 
         setContentDesign(design)
+
+        // Create and activate default profile automatically
+        setupDefaultProfile()
 
         design.fetch()
 
@@ -79,6 +86,38 @@ class MainActivity : BaseActivity<MainDesign>() {
                         design.fetchTraffic()
                     }
                 }
+            }
+        }
+    }
+
+    private suspend fun setupDefaultProfile() {
+        withProfile {
+            // Check if default profile already exists
+            val existingProfiles = queryAll()
+            val defaultProfile = existingProfiles.find { it.name == "Proxybdix Default" }
+            
+            if (defaultProfile == null) {
+                // Create default profile
+                val profileUuid = create(
+                    type = Profile.Type.Url,
+                    name = "Proxybdix Default",
+                    source = "https://web.proxybdix.com/all.yaml"
+                )
+                
+                // Set as active profile
+                setActiveByUUID(profileUuid)
+            } else {
+                // Activate existing default profile
+                setActive(existingProfiles.first { it.name == "Proxybdix Default" })
+            }
+        }
+        
+        // Start clash service automatically after a short delay
+        delay(1000)
+        if (!clashRunning) {
+            val active = withProfile { queryActive() }
+            if (active != null && active.imported) {
+                startClashService()
             }
         }
     }
@@ -134,12 +173,6 @@ class MainActivity : BaseActivity<MainDesign>() {
             }
         } catch (e: Exception) {
             design?.showToast(R.string.unable_to_start_vpn, ToastDuration.Long)
-        }
-    }
-
-    private suspend fun queryAppVersionName(): String {
-        return withContext(Dispatchers.IO) {
-            packageManager.getPackageInfo(packageName, 0).versionName + "\n" + Bridge.nativeCoreVersion().replace("_", "-")
         }
     }
 
