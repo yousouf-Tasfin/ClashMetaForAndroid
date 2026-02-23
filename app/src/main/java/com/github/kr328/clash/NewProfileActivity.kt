@@ -33,7 +33,7 @@ class NewProfileActivity : BaseActivity<NewProfileDesign>() {
     override suspend fun main() {
         // Redirect to main activity since we're removing profile creation
         finish()
-        startActivity(intent<MainActivity>())
+        startActivity(Intent(this, MainActivity::class.java))
     }
 
     private fun launchAppDetailed(provider: ProfileProvider.External) {
